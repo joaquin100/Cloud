@@ -49,12 +49,15 @@ app.get('/search/:word', function(req, res) {
         console.log("getAttributes() returned no results");
         callback(undefined, imageurls);
       } else {
+        console.log("URL FETCHED =>", data);
   	    async.forEach(data, function(attribute, callback) { 
-                images.get(attribute.value, function(err, data){
+                images.get(attribute.category, function(err, data){
                     if (err) {
+                        console.log("error");
                         console.log(err);
                     }
-                    imageurls.push(data[0].value);
+                    console.log("url", data[0].url);
+                    imageurls.push(data[0].url);
                     callback();
                  });
           }, function() {
@@ -88,4 +91,5 @@ images.init(
     }    
 );
 
+app.listen(3000, () => console.log(`Listening on port http://127.0.0.1:${3000}!`));
 module.exports = app;
