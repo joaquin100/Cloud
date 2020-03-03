@@ -23,33 +23,34 @@ function displayModal() {
 
 }
 
-let imagesToLoad = []
-let currentImageIndex = 0;
-
-
+  var imagesToRender = []
+  var currentImageIndex = 0;
   
   $("#next").click( function(e) {
     currentImageIndex++;
-    let max_images_to_render = imagesToLoad.length - (currentImageIndex*4);
+    let max_images_to_render = imagesToRender.length - (currentImageIndex*2);
     let i;
     for(i = 0; i < max_images_to_render; i++) {
-      $(`#img${i}`).attr("src", imagesToLoad[i + (currentImageIndex*4)]);
+      $(`#img${i}`).attr("src", imagesToRender[i + (currentImageIndex*2)]);
       $(`#img${i}`).show(); 
     }
 
-    for(; i <= 3; i++) {
+    for(; i < 2; i++) {
       $(`#img${i}`).hide();
     }
+
+    console.log("i",i);
+
     $("#previous").show();
-    if(max_images_to_render < 4) $(this).hide();
+    if(i <= 2) $(this).hide();
 
 
   });
   
   $("#previous").click( function(e) {
     currentImageIndex--;
-    for(let i = 0; i < 4; i++) {
-      $(`#img${i}`).attr("src", imagesToLoad[i + (currentImageIndex*4)]);
+    for(let i = 0; i < 2; i++) {
+      $(`#img${i}`).attr("src", imagesToRender[i + (currentImageIndex*2)]);
       $(`#img${i}`).show();
     }
     $("#next").show();
@@ -58,36 +59,41 @@ let currentImageIndex = 0;
   });
 
   function renderQueryResults(data) {
-    let imagesToRender = [];
+    
     if (data.error != undefined) {
       $("#status").html("Error: "+data.error);
     } 
     else {
+      currentImageIndex = 0;
+      imagesToRender = [];
+      let images = document.getElementsByTagName("img");
+
+      //Limpiando de imágenes anteriores
+      for(let i=0; i < images.length; i++){
+        //console.log("limpiando imagen");
+        images[i].removeAttribute("src");
+      }
+
+      imagesToRender = data.results;
+      console.log("images to render array", imagesToRender);
 
       $("#status").html(""+data.num_results+" result(s)");
 
       let max_images_to_render = data.num_results;
-      if(max_images_to_render > 4) max_images_to_render = 4;
+      if(max_images_to_render > 2) max_images_to_render = 2;
 
-      let i;
-      for(i=0; i<max_images_to_render; i++){
-        console.log(data);
-        imagesToRender = data.results;
+
+      for(let i=0; i<max_images_to_render; i++){
+        console.log(imagesToRender[i]);
         $(`#img${i}`).attr("src", imagesToRender[i]);
       }
 
-      for(; i <= 3; i++) {
-        $(`#img${i}`).hide();
-      }
-
-      console.log("i",i);
+      console.log("data.num_results:",data.num_results);
       
-      if(data.num_results > 4) {
+      if(data.num_results > 2) {
         $("#next").show();
+        //currentImageIndex = 2;
       }
-
-      $("#next").show();
-      $("#previous").show();
       
      }
    }

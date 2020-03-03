@@ -49,7 +49,7 @@ app.get('/search/:word', function(req, res) {
         console.log("getAttributes() returned no results");
         callback(undefined, imageurls);
       } else {
-        console.log("URL FETCHED =>", data);
+        console.log("data", data);
   	    async.forEach(data, function(attribute, callback) { 
                 images.get(attribute.category, function(err, data){
                     if (err) {
